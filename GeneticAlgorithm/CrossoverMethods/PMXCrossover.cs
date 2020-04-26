@@ -1,9 +1,8 @@
 ﻿using Common;
 using GeneticAlgorithm.Abstractions;
-using System.Collections.Generic;
 using System.Linq;
 
-namespace GeneticAlgorithm
+namespace GeneticAlgorithm.CrossoverMethods
 {
     public class PMXCrossover : ICrossoverAlgorithm
     {
@@ -13,46 +12,12 @@ namespace GeneticAlgorithm
         {
             CrossoverChance = crossoverChance;
         }
-        public Population RUN(Population population)
+        public void Crossover(ref Element a, ref Element b, int startCrossoverIndex, int endCrossoverIndex)
         {
-            var populationSize = population.Size;
-            var offspring = new List<Element>();
-            foreach (var element in population.Elements)
-            {
-                if (Utils.Random.NextDouble() < CrossoverChance)
-                {
-                    int randomIndex = Utils.Random.Next(populationSize);
-                    var a = element.Copy();
-                    var b = population.Elements.ElementAt(randomIndex);
-                    Crossover(ref a, ref b);
-
-                    offspring.Add(a);
-                    offspring.Add(b);
-                }
-                else
-                {
-                    offspring.Add(element);
-                }
-            }
-            return new Population(offspring);
-        }
-        private void Crossover(ref Element a, ref Element b)
-        {
-            int length = a.Data.Length;
-            int crossStartIndex = Utils.Random.Next(length - 1) + 1;
-            int crossEndIndex = Utils.Random.Next(length - 1) + 1;
-
-            if (crossStartIndex > crossEndIndex)
-            {
-                int tmp = crossStartIndex;
-                crossStartIndex = crossEndIndex;
-                crossEndIndex = tmp;
-            }
             var copyA = a.Copy();
             var copyB = b.Copy();
-            a = new Element(Crossover(copyA.Data, copyB.Data, crossStartIndex, crossEndIndex));
-            b = new Element(Crossover(copyB.Data, copyA.Data, crossStartIndex, crossEndIndex));
-
+            a = new Element(Crossover(copyA.Data, copyB.Data, startCrossoverIndex, endCrossoverIndex));
+            b = new Element(Crossover(copyB.Data, copyA.Data, startCrossoverIndex, endCrossoverIndex));
         }
         private double[] Crossover(double[] a, double[] b, int crossStartIndex, int crossEndIndex)
         {

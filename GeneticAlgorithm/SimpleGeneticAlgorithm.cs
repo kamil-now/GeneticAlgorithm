@@ -11,6 +11,7 @@ namespace GeneticAlgorithm
         public IMutationAlgorithm Mutation { get; }
         public Action<Population> FitnessFunction { get; }
 
+        private Crossover _crossover;
         private bool _stop;
 
         public SimpleGeneticAlgorithm(
@@ -23,6 +24,7 @@ namespace GeneticAlgorithm
             Crossover = crossover;
             Mutation = mutation;
             FitnessFunction = fitnessFunction;
+            _crossover = new Crossover(crossover);
         }
 
         public void STOP() => _stop = true;
@@ -33,7 +35,7 @@ namespace GeneticAlgorithm
             while (!_stop)
             {
                 population = Selection.RUN(population);
-                population = Crossover.RUN(population);
+                population = _crossover.RUN(population);
                 population = Mutation.RUN(population);
                 FitnessFunction(population);
 

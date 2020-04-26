@@ -1,24 +1,54 @@
-﻿using Common;
+﻿using CommandLine;
+using Common;
 using GeneticAlgorithm;
 using GeneticAlgorithm.Abstractions;
+using GeneticAlgorithm.CrossoverMethods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ML_project
 {
+    enum Function
+    {
+        SinXCosY = 0,
+        Schwefel = 1
 
+    }
+    class Options
+    {
+        [Option('f', "function", Required = true, Default = "sin(x) * cos(x)", HelpText = "\ndescribes function to be processed:\n 0: sin(x) * cos(x)\n 1: schwefel function")]
+        public Function Function { get; set; }
+
+        [Option('o', "output file path")]
+        public string OutputFile { get; set; }
+        [Option('p', "population size", Default = 100)]
+        public int PopulationSize { get; set; }
+        [Option('i', "iteration to print", Default = 10000)]
+        public ulong IterationToPrint { get; set; }
+    }
     class Program
     {
         static void Main(string[] args)
         {
-            var function = GetFunction();
+#if (DEBUG)
+            var options = new Options()
+            {
+                Function = Function.SinXCosY,
+                PopulationSize = 100,
+                IterationToPrint = 10000
+            };
+#else
+            var options = EvaluateCommandLineArguments(args);
+#endif
+            var function = GetFunction(options.Function);
+
             var algorithm = GetAlgorithm(function);
-            var population = GetPopulation(100, 2);
+            var population = GetPopulation(options.PopulationSize, 2);
 
             algorithm.IterationCompleted += (p, i) =>
              {
-                 if (i % 10000 != 0)
+                 if (i % options.IterationToPrint != 0)
                      return;
                  Console.SetCursorPosition(0, 0);
                  Console.WriteLine(i);
@@ -34,15 +64,28 @@ namespace ML_project
             algorithm.STOP();
             Console.ReadKey();
         }
-        static Func<double[], double> GetFunction()
+        static Func<double[], double> GetFunction(Function opt)
         {
-            return (double[] tab) =>
+            switch (opt)
             {
-                var x = tab[0];
-                var y = tab[1];
 
-                return Math.Sin(x) * Math.Cos(y);
-            };
+                case Function.Schwefel:
+                    return (double[] tab) =>
+                    {
+                        var x = tab[0];
+                        var y = tab[1];
+                        return (-x * Math.Sin(Math.Sqrt(Math.Abs(x)))) + (-y * Math.Sin(Math.Sqrt(Math.Abs(y))));
+                    };
+                default:
+                case Function.SinXCosY:
+                    return (double[] tab) =>
+                    {
+                        var x = tab[0];
+                        var y = tab[1];
+
+                        return Math.Sin(x) * Math.Cos(y);
+                    };
+            }
         }
         static SimpleGeneticAlgorithm GetAlgorithm(Func<double[], double> function)
         {
@@ -90,7 +133,30 @@ namespace ML_project
 
             return data;
         }
+        static Options EvaluateCommandLineArguments(string[] args)
+        {
+            Options opt = null;
 
+            var result = Parser.Default.ParseArguments<Options>(args)
+             .WithParsed(op =>
+             {
+                 ValidateOptions(op);
+                 opt = op;
+             })
+             .WithNotParsed((errs) =>
+             {
+                 Console.ReadKey();
+                 Environment.Exit(-1);
+             });
+            Console.WriteLine("PRESS ENTER TO RUN...");
+            Console.ReadKey();
+            Console.Clear();
+            return opt;
+        }
+        static void ValidateOptions(Options opts)
+        {
+            // TODO
+        }
     }
 
 }

@@ -3,6 +3,6 @@
     public interface ICrossoverAlgorithm
     {
         double CrossoverChance { get; }
-        Population RUN(Population population);
+        void Crossover(ref Element a, ref Element b, int startCrossoverIndex, int endCrossoverIndex);
     }
 }
