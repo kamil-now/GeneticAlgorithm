@@ -3,6 +3,6 @@
     public interface IMutationAlgorithm
     {
         double MutationChance { get; }
-        Population RUN(Population population);
+        Element Mutate(ref Element element, int gene, int endGene);
     }
 }

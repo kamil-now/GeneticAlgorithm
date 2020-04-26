@@ -58,11 +58,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CrossoverMethods\OXCrossoverTest.cs" />
     <Compile Include="CrossoverMethods\PMXCrossoverTest.cs" />
+    <Compile Include="MutationMethods\UniformMutationTest.cs" />
+    <Compile Include="MutationMethods\InversionMutationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="MutationMethods\" />
     <Folder Include="SelectionMethods\" />
   </ItemGroup>
   <ItemGroup>

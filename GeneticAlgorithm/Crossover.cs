@@ -36,11 +36,11 @@ namespace GeneticAlgorithm
 
                     };
                     var length = a.Data.Length;
-                    int crossStartIndex = Utils.Random.Next(length - 1) + 1;
-                    int crossEndIndex = Utils.Random.Next(length - 1) + 1;
+                    var crossStartIndex = Utils.Random.Next(length - 1) + 1;
+                    var crossEndIndex = Utils.Random.Next(length - 1) + 1;
                     if (crossStartIndex > crossEndIndex)
                     {
-                        int tmp = crossStartIndex;
+                        var tmp = crossStartIndex;
                         crossStartIndex = crossEndIndex;
                         crossEndIndex = tmp;
                     }

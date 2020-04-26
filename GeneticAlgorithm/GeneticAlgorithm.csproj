@@ -42,13 +42,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crossover.cs" />
+    <Compile Include="CrossoverMethods\OXCrossover.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="Abstractions\ICrossoverAlgorithm.cs" />
     <Compile Include="Abstractions\IGeneticAlgorithm.cs" />
     <Compile Include="Abstractions\IMutationAlgorithm.cs" />
     <Compile Include="Abstractions\ISelectionAlgorithm.cs" />
     <Compile Include="Abstractions\ITournamentSelectionAlgorithm.cs" />
-    <Compile Include="MutationMethods\Mutation.cs" />
+    <Compile Include="Mutation.cs" />
     <Compile Include="Population.cs" />
     <Compile Include="MutationMethods\InversionMutation.cs" />
     <Compile Include="CrossoverMethods\PMXCrossover.cs" />

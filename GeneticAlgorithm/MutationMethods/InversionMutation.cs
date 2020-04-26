@@ -1,36 +1,37 @@
 ﻿using Common;
+using GeneticAlgorithm.Abstractions;
 using System;
 
 namespace GeneticAlgorithm.MutationMethods
 {
-    public class InversionMutation : Mutation
+    public class InversionMutation : IMutationAlgorithm
     {
-        public InversionMutation(double mutationChance) : base(mutationChance)
+        public double MutationChance { get; }
+        public InversionMutation(double mutationChance)
         {
+            MutationChance = mutationChance;
         }
-        protected override Element Mutate(Element element)
+        public Element Mutate(ref Element element, int gene, int endGene)
         {
-            var data = new double[element.Data.Length];
-            int gen1 = Utils.Random.Next(0, data.Length);
-            int gen2 = Utils.Random.Next(0, data.Length);
+            var data = element.Data;
 
-            if (gen1 > gen2)
+            if (gene > endGene)
             {
-                int tmp = gen2;
-                gen2 = gen1;
-                gen1 = tmp;
+                int tmp = endGene;
+                endGene = gene;
+                gene = tmp;
             }
 
-            var tmpArr = new double[gen2 - gen1];
+            var tmpArr = new double[endGene - gene + 1];
 
-            for (int p = gen1, x = 0; p < gen2; p++, x++)
+            for (int p = gene, x = 0; p <= endGene; p++, x++)
             {
                 tmpArr[x] = data[p];
             }
 
             Array.Reverse(tmpArr);
 
-            for (int p = gen1, x = 0; p < gen2; p++, x++)
+            for (int p = gene, x = 0; p <= endGene; p++, x++)
             {
                 data[p] = tmpArr[x];
             }
