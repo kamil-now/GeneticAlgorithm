@@ -1,7 +1,7 @@
 ﻿using Common;
 using GeneticAlgorithm.Abstractions;
 
-namespace GeneticAlgorithm
+namespace GeneticAlgorithm.MutationMethods
 {
     public abstract class Mutation : IMutationAlgorithm
     {

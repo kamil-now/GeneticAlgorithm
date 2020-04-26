@@ -1,8 +1,7 @@
 ﻿using Common;
-using GeneticAlgorithm.Abstractions;
 using System;
 
-namespace GeneticAlgorithm
+namespace GeneticAlgorithm.MutationMethods
 {
     public class InversionMutation : Mutation
     {

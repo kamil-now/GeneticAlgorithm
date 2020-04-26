@@ -1,6 +1,6 @@
 ﻿using Common;
 
-namespace GeneticAlgorithm.Abstractions
+namespace GeneticAlgorithm.MutationMethods
 {
     public class UniformMutation : Mutation
     {

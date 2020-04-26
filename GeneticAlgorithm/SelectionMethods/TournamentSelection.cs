@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GeneticAlgorithm
+namespace GeneticAlgorithm.SelectionMethods
 {
     public class TournamentSelection : ITournamentSelectionAlgorithm
     {

@@ -3,6 +3,8 @@ using Common;
 using GeneticAlgorithm;
 using GeneticAlgorithm.Abstractions;
 using GeneticAlgorithm.CrossoverMethods;
+using GeneticAlgorithm.MutationMethods;
+using GeneticAlgorithm.SelectionMethods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
