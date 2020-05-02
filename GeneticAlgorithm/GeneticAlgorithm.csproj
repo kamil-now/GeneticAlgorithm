@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstractions\IFitnessFunction.cs" />
     <Compile Include="Crossover.cs" />
     <Compile Include="CrossoverMethods\OXCrossover.cs" />
     <Compile Include="Element.cs" />

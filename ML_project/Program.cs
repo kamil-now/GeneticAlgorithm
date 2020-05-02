@@ -5,6 +5,7 @@ using GeneticAlgorithm.Abstractions;
 using GeneticAlgorithm.CrossoverMethods;
 using GeneticAlgorithm.MutationMethods;
 using GeneticAlgorithm.SelectionMethods;
+using ML_project.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,12 @@ namespace ML_project
         public string OutputFile { get; set; }
         [Option('p', "population size", Default = 100)]
         public int PopulationSize { get; set; }
+        [Option('m', "mutation chance", Default = 0.01)]
+        public double MutationChance { get; set; }
+        [Option('s', "selection chance", Default = 0.6)]
+        public double SelectionChance { get; set; }
+        [Option('c', "crossover chance", Default = 0.6)]
+        public double CrossoverChance { get; set; }
         [Option('i', "iteration to print", Default = 10000)]
         public ulong IterationToPrint { get; set; }
     }
@@ -36,17 +43,20 @@ namespace ML_project
 #if (DEBUG)
             var options = new Options()
             {
-                Function = Function.SinXCosY,
+                Function = Function.Schwefel,
                 PopulationSize = 100,
-                IterationToPrint = 10000
+                IterationToPrint = 10000,
+                MutationChance = 0.01,
+                SelectionChance = 0.6,
+                CrossoverChance = 0.6
             };
 #else
             var options = EvaluateCommandLineArguments(args);
 #endif
             var function = GetFunction(options.Function);
 
-            var algorithm = GetAlgorithm(function);
-            var population = GetPopulation(options.PopulationSize, 2);
+            var algorithm = GetAlgorithm(function, options);
+            var population = GetPopulation(options.PopulationSize, function);
 
             algorithm.IterationCompleted += (p, i) =>
              {
@@ -66,52 +76,31 @@ namespace ML_project
             algorithm.STOP();
             Console.ReadKey();
         }
-        static Func<double[], double> GetFunction(Function opt)
+        static IFitnessFunction GetFunction(Function opt)
         {
             switch (opt)
             {
-
-                case Function.Schwefel:
-                    return (double[] tab) =>
-                    {
-                        var x = tab[0];
-                        var y = tab[1];
-                        return (-x * Math.Sin(Math.Sqrt(Math.Abs(x)))) + (-y * Math.Sin(Math.Sqrt(Math.Abs(y))));
-                    };
+                case Function.Schwefel: return new SchwefelFunction();
                 default:
-                case Function.SinXCosY:
-                    return (double[] tab) =>
-                    {
-                        var x = tab[0];
-                        var y = tab[1];
-
-                        return Math.Sin(x) * Math.Cos(y);
-                    };
+                case Function.SinXCosY: return new SinCosFunction();
             }
         }
-        static SimpleGeneticAlgorithm GetAlgorithm(Func<double[], double> function)
+        static SimpleGeneticAlgorithm GetAlgorithm(IFitnessFunction function, Options options)
         {
             return new SimpleGeneticAlgorithm
                 (
-                    new TournamentSelection(0.6, 100, 5),
-                    new PMXCrossover(0.6),
-                    new UniformMutation(0.01, -0.1, 0.1),
-                    x =>
-                    {
-                        foreach (var element in x.Elements)
-                        {
-                            element.Value = function(element.Data);
-                            element.Fitness = -1 * element.Value * 10000;
-                        }
-                    }
+                    new TournamentSelection(options.SelectionChance, options.PopulationSize, 5),
+                    new PMXCrossover(options.CrossoverChance),
+                    new UniformMutation(options.MutationChance, function.MinValue, function.MaxValue),
+                    function
                 );
         }
-        static Population GetPopulation(int count, int dataSize)
+        static Population GetPopulation(int count, IFitnessFunction function)
         {
             var elements = new List<Element>();
             for (int i = 0; i < count; i++)
             {
-                elements.Add(new Element(GetRandomData(dataSize)));
+                elements.Add(new Element(GetRandomData(function)));
             }
             return new Population(elements);
         }
@@ -123,12 +112,12 @@ namespace ML_project
                 key = Console.ReadKey(true);
             } while (key.Key != consoleKey);
         }
-        static IEnumerable<double> GetRandomData(int size)
+        static IEnumerable<double> GetRandomData(IFitnessFunction function)
         {
             var data =
                 Enumerable
-                .Range(0, size)
-                .Select(x => Utils.RandomDouble(-100, 100))
+                .Range(0, function.DataSize)
+                .Select(x => Utils.RandomDouble(function.MinValue, function.MaxValue))
                 .ToArray();
 
             Utils.Shuffle(data);
@@ -142,7 +131,10 @@ namespace ML_project
             var result = Parser.Default.ParseArguments<Options>(args)
              .WithParsed(op =>
              {
-                 ValidateOptions(op);
+                 if(!ValidateOptions(op))
+                 {
+                     Environment.Exit(-1);
+                 }
                  opt = op;
              })
              .WithNotParsed((errs) =>
@@ -155,9 +147,29 @@ namespace ML_project
             Console.Clear();
             return opt;
         }
-        static void ValidateOptions(Options opts)
+        static bool ValidateOptions(Options opts)
         {
-            // TODO
+            if (opts.PopulationSize < 0)
+            {
+                Console.WriteLine("INVALID POPULATION SIZE VALUE");
+                return false;
+            }
+            if (opts.SelectionChance > 1 || opts.SelectionChance < 0)
+            {
+                Console.WriteLine("INVALID SELECTION CHANCE VALUE");
+                return false;
+            }
+            if (opts.CrossoverChance > 1 || opts.CrossoverChance < 0)
+            {
+                Console.WriteLine("INVALID CROSSOVER CHANCE VALUE");
+                return false;
+            }
+            if (opts.MutationChance > 1 || opts.MutationChance< 0)
+            {
+                Console.WriteLine("INVALID MUTATION CHANCE VALUE");
+                return false;
+            }
+            return true;
         }
     }
 

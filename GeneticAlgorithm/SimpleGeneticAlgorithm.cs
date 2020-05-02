@@ -9,7 +9,7 @@ namespace GeneticAlgorithm
         public ISelectionAlgorithm Selection { get; }
         public ICrossoverAlgorithm Crossover { get; }
         public IMutationAlgorithm Mutation { get; }
-        public Action<Population> FitnessFunction { get; }
+        public IFitnessFunction FitnessFunction { get; }
 
         private Crossover _crossover;
         private Mutation _mutation;
@@ -19,7 +19,7 @@ namespace GeneticAlgorithm
             ISelectionAlgorithm selection,
             ICrossoverAlgorithm crossover,
             IMutationAlgorithm mutation,
-            Action<Population> fitnessFunction)
+            IFitnessFunction fitnessFunction)
         {
             Selection = selection;
             Crossover = crossover;
@@ -33,14 +33,14 @@ namespace GeneticAlgorithm
         public void STOP() => _stop = true;
         public void RUN(Population population)
         {
-            FitnessFunction(population);
+            FitnessFunction.SetFitness(population);
             var i = 0ul;
             while (!_stop)
             {
                 population = Selection.RUN(population);
                 population = _crossover.RUN(population);
                 population = _mutation.RUN(population);
-                FitnessFunction(population);
+                FitnessFunction.SetFitness(population);
 
                 IterationCompleted?.Invoke(population, ++i);
             }
