@@ -15,7 +15,8 @@ namespace ML_project
     enum Function
     {
         SinXCosY = 0,
-        Schwefel = 1
+        Schwefel = 1,
+        Rastring = 2
 
     }
     class Options
@@ -43,7 +44,7 @@ namespace ML_project
 #if (DEBUG)
             var options = new Options()
             {
-                Function = Function.Schwefel,
+                Function = Function.Rastring,
                 PopulationSize = 100,
                 IterationToPrint = 10000,
                 MutationChance = 0.01,
@@ -80,9 +81,10 @@ namespace ML_project
         {
             switch (opt)
             {
-                case Function.Schwefel: return new SchwefelFunction();
                 default:
                 case Function.SinXCosY: return new SinCosFunction();
+                case Function.Schwefel: return new SchwefelFunction();
+                case Function.Rastring: return new RastringFunction();
             }
         }
         static SimpleGeneticAlgorithm GetAlgorithm(IFitnessFunction function, Options options)

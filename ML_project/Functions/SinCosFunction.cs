@@ -7,8 +7,8 @@ namespace ML_project.Functions
     public class SinCosFunction : IFitnessFunction
     {
         public int DataSize => 2;
-        public double MaxValue => 0.1;
-        public double MinValue => -0.1;
+        public double MaxValue => 1;
+        public double MinValue => -1;
         public void SetFitness(Population population)
         {
             foreach (var element in population.Elements)
