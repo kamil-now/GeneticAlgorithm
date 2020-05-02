@@ -23,7 +23,7 @@ namespace GeneticAlgorithm.MutationMethods
                 value = Utils.RandomDouble(Min, Max);
             } while (value == 0);
 
-            data[gene] += value;
+            data[gene] = value;
             return new Element(data);
         }
     }
