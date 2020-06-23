@@ -23,9 +23,6 @@ namespace ML_project
     {
         [Option('f', "function", Required = true, Default = "sin(x) * cos(x)", HelpText = "\ndescribes function to be processed:\n 0: sin(x) * cos(x)\n 1: schwefel function")]
         public Function Function { get; set; }
-
-        [Option('o', "output file path")]
-        public string OutputFile { get; set; }
         [Option('p', "population size", Default = 100)]
         public int PopulationSize { get; set; }
         [Option('m', "mutation chance", Default = 0.01)]
