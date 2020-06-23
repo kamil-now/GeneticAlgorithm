@@ -21,7 +21,7 @@ namespace ML_project
     }
     class Options
     {
-        [Option('f', "function", Required = true, Default = "sin(x) * cos(x)", HelpText = "\ndescribes function to be processed:\n 0: sin(x) * cos(x)\n 1: schwefel function")]
+        [Option('f', "function", Default = 0, HelpText = "\ndescribes function to be processed:\n 0: sin(x) * cos(y)\n 1: schwefel function\n 2: rastring function")]
         public Function Function { get; set; }
         [Option('p', "population size", Default = 100)]
         public int PopulationSize { get; set; }
@@ -31,7 +31,7 @@ namespace ML_project
         public double SelectionChance { get; set; }
         [Option('c', "crossover chance", Default = 0.6)]
         public double CrossoverChance { get; set; }
-        [Option('i', "iteration to print", Default = 10000)]
+        [Option('i', "iteration to print", Default = 10000ul)]
         public ulong IterationToPrint { get; set; }
     }
     class Program
